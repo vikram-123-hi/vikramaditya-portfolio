@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { HiMenu, HiX } from 'react-icons/hi';
+import ScrambleText from './ScrambleText';
 
 const sections = ['About', 'Experience', 'Skills', 'Projects', 'Education', 'Contact'];
 
@@ -32,7 +33,7 @@ export default function Navbar() {
     <nav className="fixed top-0 left-0 w-full z-50 bg-dark/80 backdrop-blur border-b border-terminal/20">
       <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
         <button onClick={() => scrollTo('hero')} className="text-terminal font-bold text-lg hover:opacity-80">
-          vikramaditya<span className="animate-pulse">_</span>
+          <ScrambleText />
         </button>
         <div className="hidden md:flex gap-6">
           {sections.map((s) => (
