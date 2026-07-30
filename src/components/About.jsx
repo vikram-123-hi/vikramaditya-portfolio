@@ -1,11 +1,25 @@
 import { motion, useInView } from 'framer-motion';
 import { personalInfo } from '../data/portfolioData';
-import { useRef } from 'react';
+import { useRef, useState, useCallback, useEffect } from 'react';
 import ParallaxSection from './ParallaxSection';
+import AbendOverlay from './AbendOverlay';
 
 export default function About() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-100px' });
+  const [showPhoto, setShowPhoto] = useState(true);
+
+  useEffect(() => {
+    if (!inView) return;
+    if (showPhoto) {
+      const timer = setTimeout(() => setShowPhoto(false), 2500);
+      return () => clearTimeout(timer);
+    }
+  }, [inView, showPhoto]);
+
+  const handleAbendComplete = useCallback(() => {
+    setShowPhoto(true);
+  }, []);
 
   return (
     <ParallaxSection speed={0.15}>
@@ -30,11 +44,9 @@ export default function About() {
             <div className="relative">
             <div className="w-64 h-64 rounded-full overflow-hidden border-2 border-terminal/50 shadow-[0_0_20px_rgba(0,255,65,0.15)] bg-dark-panel">
               <div className="absolute inset-0 rounded-full ring-1 ring-terminal/20 pointer-events-none z-10" />
-              <img
-                src="/profile.jpg"
-                alt={personalInfo.name}
-                className="w-full h-full object-cover relative z-[1]"
-                onError={(e) => { e.target.style.display = 'none'; }}
+              <ProfileWithAbend
+                showPhoto={showPhoto}
+                onAbendComplete={handleAbendComplete}
               />
             </div>
             <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-dark-panel border border-terminal/30 px-3 py-1 text-xs text-terminal font-mono whitespace-nowrap z-20">
@@ -62,5 +74,19 @@ export default function About() {
         </div>
       </section>
     </ParallaxSection>
+  );
+}
+
+function ProfileWithAbend({ showPhoto, onAbendComplete }) {
+  return (
+    <div className="relative w-full h-full">
+      <img
+        src={`${import.meta.env.BASE_URL}profile.jpg`}
+        alt={personalInfo.name}
+        className={`w-full h-full object-cover transition-opacity duration-500 ${showPhoto ? 'opacity-100' : 'opacity-0'}`}
+        onError={(e) => { e.target.style.display = 'none'; }}
+      />
+      <AbendOverlay show={!showPhoto} onNext={onAbendComplete} />
+    </div>
   );
 }

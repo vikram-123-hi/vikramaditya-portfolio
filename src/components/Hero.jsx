@@ -42,7 +42,7 @@ export default function Hero() {
             $ contact_me
           </button>
           <a
-            href="/Vikramaditya_Swain_Mainframe_Resume.docx"
+            href={`${import.meta.env.BASE_URL}Vikramaditya_Swain_Mainframe_Resume.docx`}
             download
             className="px-6 py-3 border border-terminal/30 text-terminal-dim hover:border-terminal hover:text-terminal transition-colors font-mono text-sm flex items-center gap-2"
           >
