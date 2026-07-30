@@ -21,11 +21,22 @@ function SkillGroup({ title, items, inView, index }) {
             <div className="h-2 bg-dark-panel border border-terminal/20 rounded overflow-hidden">
               <motion.div
                 initial={{ width: 0 }}
-                animate={inView ? { width: `${skill.level}%` } : {}}
-                transition={{ duration: 1, delay: i * 0.1, ease: 'easeOut' }}
+                animate={inView ? {
+                  width: `${skill.level}%`,
+                  boxShadow: [
+                    '0 0 6px #00ff41, 0 0 15px rgba(0,255,65,0.2)',
+                    '0 0 12px #00ff41, 0 0 30px rgba(0,255,65,0.4)',
+                    '0 0 6px #00ff41, 0 0 15px rgba(0,255,65,0.2)',
+                  ],
+                } : {}}
+                transition={{ duration: 1, delay: i * 0.1, ease: 'easeOut', boxShadow: { duration: 2, repeat: Infinity, ease: 'easeInOut' } }}
                 className="h-full bg-terminal relative"
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent to-terminal/30" />
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-r from-transparent via-terminal/40 to-transparent"
+                  animate={{ x: ['-100%', '100%'] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: 'linear', delay: i * 0.2 }}
+                />
               </motion.div>
             </div>
           </div>

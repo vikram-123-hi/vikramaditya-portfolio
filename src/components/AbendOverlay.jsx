@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 
 const ABENDS = [
   { code: 'S0C4', reason: 'PROTECTION EXCEPTION', desc: 'UNAUTHORIZED STORAGE ACCESS' },
@@ -11,27 +10,51 @@ const ABENDS = [
   { code: 'S0C6', reason: 'SPECIFICATION EXCEPTION', desc: 'INVALID INSTRUCTION FORMAT' },
 ];
 
+const JOBNAMES = ['VIKRAM', 'COBOL01', 'MAINDEV', 'SYSPROG', 'TSOUSER'];
+const STEPS = ['COBOL', 'LINKEDIT', 'COMPILE', 'EXECUTE', 'ASSEMBLE'];
+const USERS = ['SWAIN', 'VSWAIN', 'SYSTEM'];
+
+function pad(n) { return String(n).padStart(2, '0'); }
+
+function timestamp() {
+  const h = 0|Math.random()*24;
+  const m = 0|Math.random()*60;
+  const s = 0|Math.random()*60;
+  return `${pad(h)}.${pad(m)}.${pad(s)}`;
+}
+
 function randomHex(len) {
   return Array.from({ length }, () => Math.floor(Math.random() * 16).toString(16).toUpperCase()).join('');
 }
 
-function generateDump(code) {
-  const psw = `${randomHex(4)} ${randomHex(4)} ${randomHex(4)} ${randomHex(4)}`;
-  const regs = Array.from({ length: 16 }, (_, i) =>
-    `R${i.toString(16).toUpperCase().padStart(2, '0')}  ${randomHex(8)}`
-  );
-  const dump = Array.from({ length: 4 }, () => randomHex(32));
-  return { psw, regs, dump, code };
-}
-
 export default function AbendOverlay({ show, onNext }) {
   const [abend, setAbend] = useState(null);
-  const [dump, setDump] = useState(null);
+  const [lines, setLines] = useState([]);
 
   const nextAbend = useCallback(() => {
-    const next = ABENDS[Math.floor(Math.random() * ABENDS.length)];
-    setAbend(next);
-    setDump(generateDump(next.code));
+    const ab = ABENDS[Math.floor(Math.random() * ABENDS.length)];
+    setAbend(ab);
+    const jobname = JOBNAMES[0|Math.random() * JOBNAMES.length];
+    const step = STEPS[0|Math.random() * STEPS.length];
+    const user = USERS[0|Math.random() * USERS.length];
+    const ts = timestamp();
+    const tsEnd = timestamp();
+    const addr = randomHex(8);
+    setLines([
+      'J E S 2  J O B  L O G  --  S Y S T E M  A B E N D',
+      '',
+      ` JOBNAME: ${jobname.padEnd(8)} STEP: ${step.padEnd(10)} PROCSTEP: ${step.padEnd(10)}`,
+      ` ABEND CODE: ${ab.code.padEnd(8)} REASON: ${ab.reason}`,
+      ` USER: ${user.padEnd(10)}    TIME: ${ts}   DATE: 2026.${pad(1+0|Math.random()*365)}`,
+      '',
+      ` IEF403I ${jobname} - STARTED - TIME=${ts}`,
+      ` IEF404I ${jobname} - ENDED   - TIME=${tsEnd}  - ABEND=${ab.code}`,
+      ` IEF452I ${jobname} - ABEND CODE ${ab.code} - ${ab.reason}`,
+      ` IEF453I ${jobname} - ${ab.desc} AT ADDRESS ${addr}`,
+      ` IEC031I ${jobname} - ABEND DUMP CAPTURED - JOB TERMINATED`,
+      '',
+      ` ***  JOB ${jobname} ABENDED - CODE ${ab.code}  ***`,
+    ]);
   }, []);
 
   useEffect(() => {
@@ -43,35 +66,32 @@ export default function AbendOverlay({ show, onNext }) {
   }, [show, nextAbend, onNext]);
 
   return (
-    <AnimatePresence>
-      {show && abend && dump && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.15 }}
-          className="absolute inset-0 z-20 flex items-center justify-center bg-dark/95"
-        >
-          <div className="font-mono text-[10px] leading-tight tracking-wide select-none">
-            <p className="text-red-400 font-bold text-xs mb-1">SYSTEM ABEND {dump.code}</p>
-            <p className="text-terminal-dim mb-0.5">COMPLETION CODE: <span className="text-red-400">{abend.code}</span></p>
-            <p className="text-terminal-dim mb-0.5">REASON: <span className="text-yellow-400">{abend.reason}</span></p>
-            <p className="text-terminal-dim mb-0.5">DESCRIPTION: {abend.desc}</p>
-            <p className="text-terminal-dim mb-0.5">PSW: {dump.psw}</p>
-            <p className="text-terminal-dim mb-0.5">REGS:</p>
-            <div className="grid grid-cols-2 gap-x-2 mb-0.5">
-              {dump.regs.map((r, i) => (
-                <p key={i} className="text-terminal-dim">{r}</p>
-              ))}
-            </div>
-            <p className="text-terminal-dim mb-0.5">DUMP:</p>
-            {dump.dump.map((line, i) => (
-              <p key={i} className="text-terminal-dim/60">{line}</p>
-            ))}
-            <p className="text-red-400/70 mt-1 animate-pulse">ABEND DUMP CAPTURED — SYSTEM WAITING</p>
-          </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+    <div
+      className={`absolute inset-0 z-20 flex items-center justify-center transition-opacity duration-200 ${show && abend ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+    >
+      <div className="bg-dark/95 w-full h-full flex items-center justify-center p-3">
+        <div className="font-mono text-[10px] leading-relaxed tracking-wide select-none whitespace-pre">
+          {lines.map((line, i) => {
+            const isHeader = i === 0;
+            const isEnd = i === lines.length - 1;
+            const isMsg = line.startsWith(' IEF') || line.startsWith(' IEC');
+            return (
+              <p
+                key={i}
+                className={
+                  isHeader ? 'text-terminal-dim/80 font-bold tracking-widest' 
+                  : isEnd ? 'text-red-400 animate-pulse font-bold'
+                  : isMsg ? 'text-gray-400'
+                  : line.startsWith(' ') ? 'text-terminal-dim/70'
+                  : 'text-terminal-dim'
+                }
+              >
+                {line}
+              </p>
+            );
+          })}
+        </div>
+      </div>
+    </div>
   );
 }

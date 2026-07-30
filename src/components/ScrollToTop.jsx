@@ -5,7 +5,7 @@ import useSound from '../hooks/useSound';
 
 export default function ScrollToTop() {
   const [visible, setVisible] = useState(false);
-  const { playHoverSound } = useSound();
+  const { playHoverSound, playClickSound } = useSound();
 
   useEffect(() => {
     const onScroll = () => setVisible(window.scrollY > 300);
@@ -13,7 +13,10 @@ export default function ScrollToTop() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+  const scrollToTop = () => {
+    playClickSound();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   return (
     <AnimatePresence>

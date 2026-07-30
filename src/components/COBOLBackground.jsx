@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 
 const cobolCode = `       IDENTIFICATION DIVISION.
        PROGRAM-ID. PORTFOLIO.
@@ -19,8 +19,20 @@ const cobolCode = `       IDENTIFICATION DIVISION.
            END-PERFORM.
            STOP RUN.`;
 
+function randomPos() {
+  return {
+    top: `${10 + Math.random() * 50}%`,
+    left: `${5 + Math.random() * 60}%`,
+  };
+}
+
 export default function COBOLBackground() {
   const preRef = useRef(null);
+  const [pos, setPos] = useState(() => randomPos());
+
+  const move = useCallback(() => {
+    setPos(randomPos());
+  }, []);
 
   useEffect(() => {
     const pre = preRef.current;
@@ -47,10 +59,21 @@ export default function COBOLBackground() {
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    const timer = setInterval(move, 5000);
+    return () => clearInterval(timer);
+  }, [move]);
+
   return (
     <pre
       ref={preRef}
-      className="absolute bottom-0 left-0 w-full h-48 md:h-64 overflow-hidden text-[10px] md:text-xs leading-tight text-terminal/10 pointer-events-none font-mono p-4 whitespace-pre"
+      style={{
+        position: 'fixed',
+        top: pos.top,
+        left: pos.left,
+        transition: 'top 2s ease-in-out, left 2s ease-in-out',
+      }}
+      className="w-80 max-w-[90vw] h-48 md:h-64 overflow-hidden text-[10px] md:text-xs leading-tight text-terminal/10 pointer-events-none font-mono p-4 whitespace-pre z-0"
     />
   );
 }

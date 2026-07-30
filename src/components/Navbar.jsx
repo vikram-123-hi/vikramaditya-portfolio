@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { HiMenu, HiX } from 'react-icons/hi';
 import ScrambleText from './ScrambleText';
+import useSound from '../hooks/useSound';
 
 const sections = ['Home', 'About', 'Experience', 'Skills', 'Projects', 'Education', 'Contact'];
 
 export default function Navbar() {
   const [active, setActive] = useState('');
   const [open, setOpen] = useState(false);
+  const { playHoverSound, playClickSound } = useSound();
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -41,7 +43,8 @@ export default function Navbar() {
           {sections.map((s) => (
             <button
               key={s}
-              onClick={() => scrollTo(sectionId(s))}
+              onClick={() => { playClickSound(); scrollTo(sectionId(s)); }}
+              onMouseEnter={playHoverSound}
               className={`text-sm transition-colors ${active === sectionId(s) ? 'text-terminal' : 'text-gray-500 hover:text-terminal'}`}
             >
               $ {s.toLowerCase()}
@@ -57,7 +60,8 @@ export default function Navbar() {
           {sections.map((s) => (
             <button
               key={s}
-              onClick={() => scrollTo(sectionId(s))}
+              onClick={() => { playClickSound(); scrollTo(sectionId(s)); }}
+              onMouseEnter={playHoverSound}
               className="block w-full text-left px-4 py-2 text-sm text-gray-400 hover:text-terminal hover:bg-terminal/5"
             >
               $ {s.toLowerCase()}

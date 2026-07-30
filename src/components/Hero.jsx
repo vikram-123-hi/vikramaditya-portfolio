@@ -1,17 +1,17 @@
 import { motion } from 'framer-motion';
 import MatrixRain from './MatrixRain';
-import COBOLBackground from './COBOLBackground';
 import TerminalTyping from './TerminalTyping';
 import { personalInfo } from '../data/portfolioData';
 import { FiLinkedin, FiMail, FiDownload } from 'react-icons/fi';
+import useSound from '../hooks/useSound';
 
 export default function Hero() {
   const scrollTo = (id) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+  const { playHoverSound, playClickSound } = useSound();
 
   return (
     <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden">
       <MatrixRain />
-      <COBOLBackground />
       <div className="relative z-10 text-center px-4 max-w-4xl">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
           <p className="text-terminal-dim text-sm mb-2">$ whoami</p>
@@ -30,20 +30,24 @@ export default function Hero() {
           className="flex flex-wrap gap-4 justify-center mb-8"
         >
           <button
-            onClick={() => scrollTo('projects')}
+            onClick={() => { playClickSound(); scrollTo('projects'); }}
+            onMouseEnter={playHoverSound}
             className="px-6 py-3 border border-terminal text-terminal hover:bg-terminal/10 transition-colors font-mono text-sm"
           >
             $ view_projects
           </button>
           <button
-            onClick={() => scrollTo('contact')}
+            onClick={() => { playClickSound(); scrollTo('contact'); }}
+            onMouseEnter={playHoverSound}
             className="px-6 py-3 border border-gray-600 text-gray-400 hover:border-terminal hover:text-terminal transition-colors font-mono text-sm"
           >
             $ contact_me
           </button>
           <a
-            href={`${import.meta.env.BASE_URL}Vikramaditya_Swain_Mainframe_Resume.docx`}
+            href={`${import.meta.env.BASE_URL}Vikramaditya_Swain_Mainframe_Resume.pdf`}
             download
+            onMouseEnter={playHoverSound}
+            onClick={playClickSound}
             className="px-6 py-3 border border-terminal/30 text-terminal-dim hover:border-terminal hover:text-terminal transition-colors font-mono text-sm flex items-center gap-2"
           >
             <FiDownload /> resume

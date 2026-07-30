@@ -2,6 +2,7 @@ import { motion, useInView } from 'framer-motion';
 import { personalInfo } from '../data/portfolioData';
 import { useRef, useState } from 'react';
 import { FiMail, FiPhone, FiMapPin, FiLinkedin, FiSend } from 'react-icons/fi';
+import { FaWhatsapp } from 'react-icons/fa';
 import ParallaxSection from './ParallaxSection';
 
 export default function Contact() {
@@ -54,7 +55,7 @@ export default function Contact() {
               </div>
               <form
                 onSubmit={handleSubmit}
-                action="https://formspree.io/f/your-form-id"
+                action="https://formspree.io/f/mojgbowa"
                 method="POST"
                 className="space-y-4 font-mono text-sm"
               >
@@ -123,6 +124,12 @@ export default function Contact() {
                   <FiLinkedin className="text-terminal" />
                   <a href={personalInfo.linkedin} target="_blank" rel="noopener noreferrer" className="hover:text-terminal transition-colors">
                     /in/vikramadityaswain
+                  </a>
+                </div>
+                <div className="flex items-center gap-3 text-gray-300">
+                  <FaWhatsapp className="text-green-400" />
+                  <a href="https://wa.me/917008938983" target="_blank" rel="noopener noreferrer" className="hover:text-terminal transition-colors">
+                    +91 7008938983
                   </a>
                 </div>
               </div>
