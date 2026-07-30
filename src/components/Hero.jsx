@@ -1,8 +1,9 @@
 import { motion } from 'framer-motion';
 import MatrixRain from './MatrixRain';
+import COBOLBackground from './COBOLBackground';
 import TerminalTyping from './TerminalTyping';
 import { personalInfo } from '../data/portfolioData';
-import { FiLinkedin, FiMail } from 'react-icons/fi';
+import { FiLinkedin, FiMail, FiDownload } from 'react-icons/fi';
 
 export default function Hero() {
   const scrollTo = (id) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
@@ -10,6 +11,7 @@ export default function Hero() {
   return (
     <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden">
       <MatrixRain />
+      <COBOLBackground />
       <div className="relative z-10 text-center px-4 max-w-4xl">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
           <p className="text-terminal-dim text-sm mb-2">$ whoami</p>
@@ -39,6 +41,13 @@ export default function Hero() {
           >
             $ contact_me
           </button>
+          <a
+            href="/Vikramaditya_Swain_Mainframe_Resume.docx"
+            download
+            className="px-6 py-3 border border-terminal/30 text-terminal-dim hover:border-terminal hover:text-terminal transition-colors font-mono text-sm flex items-center gap-2"
+          >
+            <FiDownload /> resume
+          </a>
         </motion.div>
 
         <motion.div

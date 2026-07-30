@@ -2,6 +2,7 @@ import { motion, useInView } from 'framer-motion';
 import { projects } from '../data/portfolioData';
 import { useRef, useState } from 'react';
 import { FiExternalLink } from 'react-icons/fi';
+import ParallaxSection from './ParallaxSection';
 
 function ProjectCard({ project, index, inView }) {
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
@@ -29,7 +30,7 @@ function ProjectCard({ project, index, inView }) {
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       style={{ transform: `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)` }}
-      className="bg-dark-panel border border-terminal/20 transition-transform duration-200 ease-out"
+      className="bg-dark-panel border border-terminal/20 transition-transform duration-200 ease-out hover:border-terminal/40"
     >
       <div className="flex items-center gap-2 px-4 py-2 border-b border-terminal/20 bg-dark">
         <span className="w-3 h-3 rounded-full bg-red-500/50" />
@@ -73,21 +74,24 @@ export default function Projects() {
   const inView = useInView(ref, { once: true, margin: '-100px' });
 
   return (
-    <section id="projects" className="min-h-screen py-20 px-4 max-w-6xl mx-auto">
-      <motion.h2
-        ref={ref}
-        initial={{ opacity: 0 }}
-        animate={inView ? { opacity: 1 } : {}}
-        className="text-2xl font-bold text-terminal mb-12 font-mono"
-      >
-        $ ls -la projects/
-      </motion.h2>
+    <ParallaxSection speed={-0.1}>
+      <section id="projects" className="min-h-screen py-20 px-4 max-w-6xl mx-auto">
+        <motion.h2
+          ref={ref}
+          initial={{ opacity: 0, y: -20 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5 }}
+          className="text-2xl font-bold text-terminal mb-12 font-mono"
+        >
+          $ ls -la projects/
+        </motion.h2>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {projects.map((project, i) => (
-          <ProjectCard key={project.title} project={project} index={i} inView={inView} />
-        ))}
-      </div>
-    </section>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {projects.map((project, i) => (
+            <ProjectCard key={project.title} project={project} index={i} inView={inView} />
+          ))}
+        </div>
+      </section>
+    </ParallaxSection>
   );
 }
