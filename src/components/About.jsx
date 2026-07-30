@@ -8,14 +8,15 @@ export default function About() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-100px' });
   const [showPhoto, setShowPhoto] = useState(true);
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   useEffect(() => {
-    if (!inView) return;
+    if (!inView || !imageLoaded) return;
     if (showPhoto) {
       const timer = setTimeout(() => setShowPhoto(false), 2500);
       return () => clearTimeout(timer);
     }
-  }, [inView, showPhoto]);
+  }, [inView, imageLoaded, showPhoto]);
 
   const handleAbendComplete = useCallback(() => {
     setShowPhoto(true);
@@ -47,6 +48,7 @@ export default function About() {
               <ProfileWithAbend
                 showPhoto={showPhoto}
                 onAbendComplete={handleAbendComplete}
+                onImageLoad={() => setImageLoaded(true)}
               />
             </div>
             <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-dark-panel border border-terminal/30 px-3 py-1 text-xs text-terminal font-mono whitespace-nowrap z-20">
@@ -77,7 +79,7 @@ export default function About() {
   );
 }
 
-function ProfileWithAbend({ showPhoto, onAbendComplete }) {
+function ProfileWithAbend({ showPhoto, onAbendComplete, onImageLoad }) {
   return (
     <div className="relative w-full h-full">
       <img
@@ -85,6 +87,7 @@ function ProfileWithAbend({ showPhoto, onAbendComplete }) {
         alt={personalInfo.name}
         className={`w-full h-full object-cover transition-opacity duration-500 ${showPhoto ? 'opacity-100' : 'opacity-0'}`}
         onError={(e) => { e.target.style.display = 'none'; }}
+        onLoad={onImageLoad}
       />
       <AbendOverlay show={!showPhoto} onNext={onAbendComplete} />
     </div>
