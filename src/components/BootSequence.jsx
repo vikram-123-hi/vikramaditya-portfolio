@@ -1,5 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
-import useSound from '../hooks/useSound';
+import { useState, useEffect } from 'react';
 
 const bootLines = [
   { text: 'IBM z/OS 02.04.00 INITIALIZING...', delay: 300 },
@@ -17,8 +16,6 @@ const bootLines = [
 export default function BootSequence({ onComplete }) {
   const [visibleLines, setVisibleLines] = useState([]);
   const [fading, setFading] = useState(false);
-  const soundPlayed = useRef(false);
-  const { playBootSound } = useSound();
 
   useEffect(() => {
     const timers = bootLines.map((line, i) =>
@@ -31,14 +28,6 @@ export default function BootSequence({ onComplete }) {
       }, line.delay)
     );
     return () => timers.forEach(clearTimeout);
-  }, []);
-
-  useEffect(() => {
-    if (!soundPlayed.current) {
-      soundPlayed.current = true;
-      const timer = setTimeout(() => playBootSound(), 100);
-      return () => clearTimeout(timer);
-    }
   }, []);
 
   return (
