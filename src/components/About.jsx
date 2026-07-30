@@ -27,17 +27,20 @@ export default function About() {
             transition={{ duration: 0.6 }}
             className="flex justify-center"
           >
-            <div className="w-64 h-64 rounded-full border-2 border-terminal/50 overflow-hidden bg-dark-panel relative group">
+            <div className="relative">
+            <div className="w-64 h-64 rounded-full overflow-hidden border-2 border-terminal/50 shadow-[0_0_20px_rgba(0,255,65,0.15)] bg-dark-panel">
+              <div className="absolute inset-0 rounded-full ring-1 ring-terminal/20 pointer-events-none z-10" />
               <img
                 src="/profile.jpg"
                 alt={personalInfo.name}
-                className="w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                className="w-full h-full object-cover relative z-[1]"
                 onError={(e) => { e.target.style.display = 'none'; }}
               />
-              <div className="absolute inset-0 flex items-center justify-center text-terminal/30 font-mono text-lg group-hover:opacity-0 transition-opacity duration-500">
-                [photo]
-              </div>
             </div>
+            <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-dark-panel border border-terminal/30 px-3 py-1 text-xs text-terminal font-mono whitespace-nowrap z-20">
+              vikramaditya_swain.jpg
+            </div>
+          </div>
           </motion.div>
 
           <motion.div
