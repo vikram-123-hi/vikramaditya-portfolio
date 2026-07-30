@@ -10,6 +10,7 @@ import Contact from './components/Contact';
 import Footer from './components/Footer';
 import CustomCursor from './components/CustomCursor';
 import BootSequence from './components/BootSequence';
+import ScrollToTop from './components/ScrollToTop';
 
 export default function App() {
   const [booted, setBooted] = useState(false);
@@ -19,6 +20,7 @@ export default function App() {
   return (
     <div className="bg-dark text-terminal min-h-screen">
       <CustomCursor />
+      <ScrollToTop />
       <Navbar />
       <Hero />
       <About />

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { HiMenu, HiX } from 'react-icons/hi';
 import ScrambleText from './ScrambleText';
 
-const sections = ['About', 'Experience', 'Skills', 'Projects', 'Education', 'Contact'];
+const sections = ['Home', 'About', 'Experience', 'Skills', 'Projects', 'Education', 'Contact'];
 
 export default function Navbar() {
   const [active, setActive] = useState('');
@@ -18,7 +18,7 @@ export default function Navbar() {
       { threshold: 0.3 }
     );
     sections.forEach((s) => {
-      const el = document.getElementById(s.toLowerCase());
+      const el = document.getElementById(sectionId(s));
       if (el) observer.observe(el);
     });
     return () => observer.disconnect();
@@ -28,6 +28,8 @@ export default function Navbar() {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
     setOpen(false);
   };
+
+  const sectionId = (s) => (s === 'Home' ? 'hero' : s.toLowerCase());
 
   return (
     <nav className="fixed top-0 left-0 w-full z-50 bg-dark/80 backdrop-blur border-b border-terminal/20">
@@ -39,8 +41,8 @@ export default function Navbar() {
           {sections.map((s) => (
             <button
               key={s}
-              onClick={() => scrollTo(s.toLowerCase())}
-              className={`text-sm transition-colors ${active === s.toLowerCase() ? 'text-terminal' : 'text-gray-500 hover:text-terminal'}`}
+              onClick={() => scrollTo(sectionId(s))}
+              className={`text-sm transition-colors ${active === sectionId(s) ? 'text-terminal' : 'text-gray-500 hover:text-terminal'}`}
             >
               $ {s.toLowerCase()}
             </button>
@@ -55,7 +57,7 @@ export default function Navbar() {
           {sections.map((s) => (
             <button
               key={s}
-              onClick={() => scrollTo(s.toLowerCase())}
+              onClick={() => scrollTo(sectionId(s))}
               className="block w-full text-left px-4 py-2 text-sm text-gray-400 hover:text-terminal hover:bg-terminal/5"
             >
               $ {s.toLowerCase()}
