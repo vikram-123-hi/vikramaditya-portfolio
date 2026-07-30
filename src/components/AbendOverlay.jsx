@@ -31,7 +31,7 @@ export default function AbendOverlay({ show, onNext }) {
   const nextAbend = useCallback(() => {
     const next = ABENDS[Math.floor(Math.random() * ABENDS.length)];
     setAbend(next);
-    setDump(generateDump(next));
+    setDump(generateDump(next.code));
   }, []);
 
   useEffect(() => {
